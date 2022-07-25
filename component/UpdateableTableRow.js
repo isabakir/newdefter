@@ -215,7 +215,7 @@ const UpdateableTableRow = (props) => {
             <Text
               style={{ width: "20%", textAlign: "center", fontWeight: "bold" }}
             >
-              {(parseFloat(props.kalan) - parseFloat(total)).toFixed(2)} TL
+              {props.kalan?(parseFloat(props.kalan) - parseFloat(total)).toFixed(2):parseFloat(total).toFixed(2)} TL
             </Text>
           </View>
           <View
@@ -229,11 +229,11 @@ const UpdateableTableRow = (props) => {
             <Text
               style={{ width: "20%", textAlign: "center", fontWeight: "bold" }}
             >
-              {Number(props.iskontoTutari) > 0
+              {Number(props.iskontoTutari) > 0 && props.kalan
                 ? parseFloat(props.kalan - Number(props.iskontoTutari)).toFixed(
                     2
                   )
-                : parseFloat(props.kalan).toFixed(2)}{" "}
+                : (parseFloat(total)-parseFloat(props.iskontoTutari)).toFixed(2)}{" "}
               TL
             </Text>
           </View>
@@ -277,13 +277,13 @@ const UpdateableTableRow = (props) => {
             <Text
               style={{ width: "20%", textAlign: "center", fontWeight: "bold" }}
             >
-              {total || tahsilat
+              {(total || tahsilat)&&props.kalan
                 ? (
                     parseFloat(props.kalan) -
                     tahsilat -
                     Number(props.iskontoTutari)
                   ).toFixed(2)
-                : 0}{" "}
+                : (parseFloat(total)-parseFloat(props.iskontoTutari)-tahsilat).toFixed(2)}{" "}
               TL
             </Text>
           </View>

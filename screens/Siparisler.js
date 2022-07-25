@@ -127,7 +127,7 @@ const Siparisler = (props) => {
               navigation.navigate("Yeni Sipariş", {
                 user_id: props.route.params.user_id,
                 buyyer_id: props.route.params.buyyer_id,
-                total: orderDatas.length
+                total: orderDatas && orderDatas.length
                   ? orderDatas[orderDatas.length - 1].genelToplam.toFixed(2)
                   : 0,
               })
