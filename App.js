@@ -17,13 +17,14 @@ import NewSiparis from "./screens/NewSiparis";
 import UpdateUser from "./component/UpdateUser";
 import Tabs from "./routes/Tabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./redux/store";
 import { useEffect } from "react";
 
 const Stack = createStackNavigator();
 
 const App = () => {
+  
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -37,7 +38,7 @@ const App = () => {
           <Stack.Screen name="SaticiLogin" component={SaticiLogin} />
           <Stack.Screen name="MusteriLogin" component={MusteriLogin} />
           <Stack.Screen name="SaticiHome" component={SaticiHome} />
-          <Stack.Screen name="MusteriHome" component={MusteriHome} />
+          <Stack.Screen name="MusteriHome" component={MusteriHome}   options={{ headerShown: false }}/>
           <Stack.Screen name="Siparişler" component={Siparisler} />
           <Stack.Screen name="Siparis Detay" component={SiparisDetay} />
           <Stack.Screen name="Yeni Sipariş" component={NewSiparis} />

@@ -8,8 +8,10 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Loading from "./Loading";
+import { useSelector } from "react-redux";
 
 const UpdateableTableRow = (props) => {
+  const state=useSelector(state=>state.user);
   const [data, setData] = useState();
   const [tahsilat, setTahsilat] = useState();
 
@@ -20,19 +22,24 @@ const UpdateableTableRow = (props) => {
   const [note, setNote] = useState(note);
   const [loading, setLoading] = useState(false);
   //console.log("tablee", props.data);
+  //console.log("stateeee",state)
+  //console.log("updateable",props);
   const sendData = () => {
+    console.log("table",table);
+    console.log("note",note);
     setLoading(true);
     axios
       .post("http://hediyemola.com/defter/v1/updateOrder.php", {
         data: table,
         key: "updateOrder",
         tahsilat: tahsilat,
-        note: props.note,
+        note: note,
         order_group_id: props.group_order_id,
+        iskonto:props.iskonto
       })
       .then((res) => {
         setLoading(false);
-        // console.log("gelen data", res.data);
+         console.log("gelen data", res.data);
       });
   };
   useEffect(() => {
@@ -84,6 +91,7 @@ const UpdateableTableRow = (props) => {
                 >
                   <TextInput
                     style={styles.row}
+                    editable={state.userType=='musteri'?false:true}
                     onChangeText={(text) => {
                       table[index]["pro_name"] = text;
 
@@ -92,9 +100,14 @@ const UpdateableTableRow = (props) => {
                     }}
                     value={table[index]["pro_name"]}
                   />
-                  <TextInput style={styles.row} value={item.pro_size} />
+                  <TextInput style={styles.row}  editable={state.userType=='musteri'?false:true} onChangeText={(text) => {
+                      table[index]["pro_size"] = text;
+                      totalOrder();
+                      setTable([...table]);
+                    }} value={item.pro_size} />
                   <TextInput
                     style={styles.row}
+                    editable={state.userType=='musteri'?false:true}
                     onChangeText={(text) => {
                       table[index]["piece"] = text;
                       totalOrder();
@@ -104,6 +117,7 @@ const UpdateableTableRow = (props) => {
                   />
                   <TextInput
                     style={styles.row}
+                    editable={state.userType=='musteri'?false:true}
                     onChangeText={(text) => {
                       table[index]["unit_price"] = text;
                       table[index]["total"] = (
@@ -215,7 +229,7 @@ const UpdateableTableRow = (props) => {
             <Text
               style={{ width: "20%", textAlign: "center", fontWeight: "bold" }}
             >
-              {props.kalan?(parseFloat(props.kalan) - parseFloat(total)).toFixed(2):parseFloat(total).toFixed(2)} TL
+              {props.oldKalan?(parseFloat(props.oldKalan)).toFixed(2):0} TL
             </Text>
           </View>
           <View
@@ -229,11 +243,7 @@ const UpdateableTableRow = (props) => {
             <Text
               style={{ width: "20%", textAlign: "center", fontWeight: "bold" }}
             >
-              {Number(props.iskontoTutari) > 0 && props.kalan
-                ? parseFloat(props.kalan - Number(props.iskontoTutari)).toFixed(
-                    2
-                  )
-                : (parseFloat(total)-parseFloat(props.iskontoTutari)).toFixed(2)}{" "}
+              {Number(total)+Number(props.oldKalan)-Number(props.iskontoTutari)}{" "}
               TL
             </Text>
           </View>
@@ -259,6 +269,7 @@ const UpdateableTableRow = (props) => {
                 textAlign: "center",
                 width: "20%",
               }}
+              editable={state.userType=='musteri'?false:true}
               value={tahsilat ? tahsilat : "0"}
               onChangeText={(e) => {
                 setTahsilat(e);
@@ -279,16 +290,17 @@ const UpdateableTableRow = (props) => {
             >
               {(total || tahsilat)&&props.kalan
                 ? (
-                    parseFloat(props.kalan) -
+                    parseFloat(total)+Number(props.oldKalan) -
                     tahsilat -
                     Number(props.iskontoTutari)
                   ).toFixed(2)
-                : (parseFloat(total)-parseFloat(props.iskontoTutari)-tahsilat).toFixed(2)}{" "}
+                : (parseFloat(total) + Number(props.oldKalan)-parseFloat(props.iskontoTutari)-Number(tahsilat)).toFixed(2)}{" "}
               TL
             </Text>
           </View>
         </View>
-        <View
+        {state.userType=='musteri'?null :(
+          <View
           style={{
             width: "100%",
             justifyContent: "center",
@@ -311,6 +323,8 @@ const UpdateableTableRow = (props) => {
             <Text>Onayla</Text>
           </TouchableOpacity>
         </View>
+        )}
+        
       </>
     );
   } else {

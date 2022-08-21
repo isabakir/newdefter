@@ -16,8 +16,14 @@ const TableRow = (props) => {
 
   return (
     <>
-      {itemDetail.map((item) => {
+      {itemDetail.map((item,index) => {
         let kalan = 0;
+        let oldKalan=0;
+        if(index==0){
+          oldKalan=0;
+        }else{
+          oldKalan=Number(itemDetail[index-1].allTotal)+Number(itemDetail[index-1].oldGenelToplam)-Number(itemDetail[index-1].tahsilat);
+        }
         kalan =
           item.oldGenelToplam || item.allTotal
             ? parseFloat(item.oldGenelToplam) + parseFloat(item.allTotal)
@@ -46,6 +52,7 @@ const TableRow = (props) => {
                   genelToplam: item.genelToplam,
                   tahsilat: item.tahsilat,
                   kalan: kalan,
+                  oldKalan:oldKalan
                 });
               }}
             >

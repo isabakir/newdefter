@@ -23,8 +23,10 @@ const Home = () => {
 
   const readSession = async () => {
     const sessionData = await AsyncStorage.getItem("userSession");
+    console.log("ses",sessionData);
     if (sessionData) {
       const sessionParse = JSON.parse(sessionData);
+      console.log("sessionparse",sessionParse);
       if (sessionParse.userType == "satici") {
         dispatch(userLogin(sessionParse));
         navigation.navigate("Tabs", {
@@ -36,13 +38,21 @@ const Home = () => {
           },
         });
       }
+      if(sessionParse.userType=='musteri'){
+        dispatch(userLogin(sessionParse));
+        navigation.navigate("MusteriHome",{tpye:'musteri',id:sessionParse.id,token:sessionParse.token});
+      }
       console.log("sessionData", JSON.parse(sessionData));
     } else {
       setLoad(true);
+      console.log("false")
     }
   };
   useEffect(() => {
-    readSession();
+    console.log("home çalıştı")
+   //readSession();
+    setLoad(true);
+   
   }, []);
   return <SafeAreaView>{!load ? <Loading /> : <LoginRouter />}</SafeAreaView>;
 };

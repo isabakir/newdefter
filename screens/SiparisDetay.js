@@ -9,9 +9,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UpdateableTableRow from "../component/UpdateableTableRow";
 import Loading from "../component/Loading";
+import { useSelector } from "react-redux";
 
 const SiparisDetay = (props) => {
   // console.log("gyryp", props.route.params);
+  const state=useSelector((state)=>state.user);
   const [data, setData] = useState([]);
   const [note, setNote] = useState();
   const [kalan, setKalan] = useState(props.route.params.kalan);
@@ -34,7 +36,7 @@ const SiparisDetay = (props) => {
       })
       .then((res) => {
         setData(res.data);
-        console.log("gelendataaaaaa=", res.data);
+       // console.log("gelendataaaaaa=", res.data);
         setNote(res.data.note);
         setLoad(true);
       });
@@ -74,6 +76,7 @@ const SiparisDetay = (props) => {
             iskonto={data.iskonto}
             iskontosuzTotal={data.iskontosuzTotal}
             iskontoTutari={data.iskontoTutari}
+            oldKalan={props.route.params.oldKalan}
           />
         </View>
 
@@ -91,6 +94,7 @@ const SiparisDetay = (props) => {
           <TextInput
             multiline={true}
             numberOfLines={4}
+            editable={state.userType=='musteri'?false:true}
             onChangeText={(e) => setNote(e)}
             value={note ? note : "Sipariş Notu yok."}
             style={{ borderWidth: 1, borderRadius: 15, padding: 5 }}

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import TableRow from "../component/TableRow";
 import SelectDropdown from "react-native-select-dropdown";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation,useIsFocused } from "@react-navigation/native";
 import Loading from "../component/Loading";
 
 const Siparisler = (props) => {
@@ -12,6 +12,7 @@ const Siparisler = (props) => {
   const countries = ["2021", "2022"];
   const [load, setLoad] = useState(false);
   const navigation = useNavigation();
+  const isFocused=useIsFocused();
   useEffect(() => {
     axios
       .post("http://hediyemola.com/defter/v1/allOrder.php", {
@@ -24,7 +25,7 @@ const Siparisler = (props) => {
         setOrderDatas(res.data);
         setLoad(true);
       });
-  }, [year, orderDatas]);
+  }, [year,isFocused]);
   if (!load) {
     return (
       <>
@@ -107,37 +108,41 @@ const Siparisler = (props) => {
             </Text>
           </Text>
         </View>
-        <View
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              borderWidth: 1,
-              padding: 5,
-              width: "80%",
-              marginTop: 15,
-              borderRadius: 15,
-              textAlign: "center",
-            }}
-            onPress={() =>
-              navigation.navigate("Yeni Sipariş", {
-                user_id: props.route.params.user_id,
-                buyyer_id: props.route.params.buyyer_id,
-                total: orderDatas && orderDatas.length
-                  ? orderDatas[orderDatas.length - 1].genelToplam.toFixed(2)
-                  : 0,
-              })
+        {
+              props.route.params.type && props.route.params.type=='musteri'? null :( <View
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    borderWidth: 1,
+                    padding: 5,
+                    width: "80%",
+                    marginTop: 15,
+                    borderRadius: 15,
+                    textAlign: "center",
+                  }}
+                  onPress={() =>
+                    navigation.navigate("Yeni Sipariş", {
+                      user_id: props.route.params.user_id,
+                      buyyer_id: props.route.params.buyyer_id,
+                      total: orderDatas && orderDatas.length
+                        ? orderDatas[orderDatas.length - 1].genelToplam.toFixed(2)
+                        : 0,
+                    })
+                  }
+                >
+                 
+                  <Text style={{ fontWeight: "bold", textAlign: "center" }}>
+                    Yeni Sipariş
+                  </Text>
+                </TouchableOpacity>
+              </View>)
             }
-          >
-            <Text style={{ fontWeight: "bold", textAlign: "center" }}>
-              Yeni Sipariş
-            </Text>
-          </TouchableOpacity>
-        </View>
+       
       </View>
     );
   }

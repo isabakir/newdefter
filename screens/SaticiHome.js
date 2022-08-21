@@ -28,7 +28,7 @@ const SaticiHome = (props) => {
         group_id: props.route.params.group_id,
       })
       .then((res) => {
-        console.log("res", res.data);
+        //console.log("res", res.data);
         setAllUsersData(res.data);
         setData(res.data);
       });
